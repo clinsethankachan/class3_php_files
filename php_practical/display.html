@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>display</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<form>
+		Name <input type="text" name="name" placeholder="Enter your name" class="form-control" id="name">
+		Age <input type="number" name="age" placeholder="Enter Your age" class="form-control" id="age">
+		Email <input type="email" name="email" placeholder="Enter Your email" class="form-control" id="email">
+		Password <input type="password" name="password" placeholder="Enter Your password" class="form-control" id="password"><br/>
+
+				<input type="submit" name="submit" value="Register" class="btn btn-primary" id="button">
+
+	</form>
+	<table class="table" id="history_display">
+		<thead>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Age</th>
+			<th>Email</th>
+			<th>Password</th>
+			<th>Action</th>
+		</thead>
+		
+	</table>
+	<script type="text/javascript">
+		function dele(id){
+			alert('hi')
+			$.ajax({
+				url:'delete.php',
+				type:'post',
+				data:{
+					id:id
+
+				},
+				success:function(response){
+					alert(response)
+				
+				},
+				error:function(response){
+					alert(response)
+				}
+			})
+		}
+		$(function(){
+			$('#button').click(function(){
+				var name=$('#name').val()
+				var age=$('#age').val()
+				var email=$('#email').val()
+				var password=$('#password').val()
+				alert('hi'+name)
+				$.ajax({
+				url:"insert.php",
+				type:"post",
+				data:{
+					name:name,
+					age:age,
+					email:email,
+					password:password
+
+				},
+				success:function(response){
+					alert(response)
+				},
+				error:function(response){
+					alert(response)
+					console.log(response)
+				}
+			})
+
+		})
+		function call(){	
+		$.ajax({
+				url:"view.php",
+				type:"get",
+				data:{
+
+				},
+				success:function(response){
+					var obj=JSON.parse(response);
+					var table_content=""
+					$('#history_display').find('tr:not(:first)').remove();
+					$.each(obj,function(index,value){
+						table_content+="<tr>";
+						table_content+="<td>"+value.id+"</td>";
+						table_content+="<td>"+value.name+"</td>";
+						table_content+="<td>"+value.age+"</td>";
+						table_content+="<td>"+value.email+"</td>";
+						table_content+="<td>"+value.password+"</td>";
+						table_content+="<td><a class='btn btn-primary' href='edit.php?id="+value.id+"'>Edit</a><button class='btn btn-danger' onclick='dele("+value.id+")'>Delete</button><button class='btn btn-primary' onclick='view("+value.id+")'</button>View</td>";
+						table_content+="</tr>";
+					})
+					$('#history_display').append(table_content);
+				},
+				error:function(){
+					alert('something went wrong');
+				}
+
+			})
+			}
+			call()
+		
+		})
+
+		
+	</script>
+
+
+</body>
+</html>
